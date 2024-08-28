@@ -6,11 +6,13 @@ from rest_framework import permissions
 class IsAuthorPermission(permissions.BasePermission):
     """Класс с проверкой прав пользователя."""
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, user_content_obj):
         """Проверяет доступ текущего пользователя к функциям приложения."""
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return obj.author == request.user
+        return bool(
+            request.method in permissions.SAFE_METHODS
+        ) or (
+            user_content_obj.author == request.user
+        )
 
 
 class IsAuthenticatedUserPermission(permissions.IsAuthenticated):
